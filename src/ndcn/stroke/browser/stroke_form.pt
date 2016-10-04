@@ -1,0 +1,135 @@
+<html metal:use-macro="context/main_template/macros/master"
+      i18n:domain="">
+<body>
+
+    <metal:block fill-slot="main">
+
+<h1 class="documentFirstHeading" tal:content="view/label | nothing" />
+
+        <div id="content-core">
+
+            <div id="form-input" tal:condition="not: view/form_instance/output">
+                <span tal:replace="structure view/contents" />
+            </div>
+
+            <div id="form-output" tal:condition="view/form_instance/output">
+            <tal:variables tal:define="formvalues python:view.form_instance.output[0];
+                                              txtoption python:view.form_instance.output[1];
+                                              results python:view.form_instance.output[2];
+                                              age python:formvalues.get('age','');
+                                              sex python:formvalues.get('sex','');
+                                              noccl python:formvalues.get('noccl','');
+                                              car python:formvalues.get('car','');
+                                              tslev python:formvalues.get('tslev','');
+                                              event python:formvalues.get('event','');
+                                              diab python:formvalues.get('diab','');
+                                              mi python:formvalues.get('mi','');
+                                              pvd python:formvalues.get('pvd','');
+                                              hypert python:formvalues.get('hypert','');
+                                              pla python:formvalues.get('pla','');">
+                                              
+                <h1> Model for predicting the risk of ipsilateral ischaemic stroke in patients with recently symptomatic carotid bifurcation stenosis</h1>       
+                <p>You entered patient's data:</p>
+                <ul>
+                    <li>Age: <b><span tal:replace="age"></span></b> years</li>
+                    <li>Sex: <b><span tal:replace="sex"></span></b></li>
+                    <li>Near Occlusion: <b><span tal:replace="noccl"></span></b></li>
+                    <li>Stenosis: <b><span tal:replace="car"></span></b></li>
+                    <li>Time since last event: <b><span tal:replace="tslev"></span></b> days </li>
+                    <li>Primary event: <b><span tal:replace="event"></span></b></li>
+                    <li>Diabetes: <b><span tal:replace="diab"></span></b></li>
+                    <li>Myocardial infarction: <b><span tal:replace="mi"></span></b></li>
+                    <li>Peripheral vascular disease: <b><span tal:replace="pvd"></span></b></li>
+                    <li>Hypertension: <b><span tal:replace="hypert"></span></b></li>
+                    <li>Irregular or ulcerated plaque: <b><span tal:replace="pla"></span></b></li>
+                </ul>
+                
+                <p tal:condition="python:txtoption == 1">
+                    <b>Risk of ipsilateral ischaemic stroke predicted by the model</b>:<br>
+                    <ul>
+                        <li>1-year risk: <span tal:replace="results/risk1_int">$risk1_int</span></li>
+                        <li>5-year risk: <span tal:replace="results/risk5_int">$risk5_int</span></li>
+                    </ul>    
+                </p>
+                
+                <p tal:condition="python:txtoption == 2">
+                    <b>Near occlusion is unknown.</b><br>
+                    <b>If presence of near occlusion were known, the risk would be:</b><br>
+                    <div>
+                    if NO near occlusion:
+                    <ul>
+                        <li>1-year risk: <span tal:replace="results/risk1_int_n">$risk1_int_n</span></li>
+                        <li>5-year risk: <span tal:replace="results/risk5_int_n">$risk5_int_n</span></li>
+                    </ul> 
+                    <span tal:condition="python:float(car) < 70">(you entered stenosis less than 70%, hence there should be no near occlusion)</span></div>
+                    <div tal:condition="python:float(car) >=70"> 
+                    if NEAR OCCLUSION:
+                      <ul>
+                            <li>1-year risk: <span tal:replace="results/risk1_int_y">$risk1_int_</span></li>
+                            <li>5-year risk: <span tal:replace="results/risk5_int_y">$risk5_int</span></li>
+                        </ul>
+                    </div>    
+                </p>
+                
+                <p tal:condition="python:txtoption == 3">
+                    <b>Plaque surface condition is unknown.</b><br>
+                    <b>If condition of plaque surface were known, the risk of ischaemic stroke would be:</b><br>
+                    <div>
+                    with IRREGULAR or ULCERATED plaque surface:
+                    <ul>
+                        <li>1-year risk: <span tal:replace="results/risk1_int_y">$risk1_int_n</span></li>
+                        <li>5-year risk: <span tal:replace="results/risk5_int_y">$risk5_int_n</span></li>
+                    </ul> 
+                   </div>
+                    <div> 
+                    with SMOOTH plaque surface:
+                      <ul>
+                            <li>1-year risk: <span tal:replace="results/risk1_int_n">$risk1_int_</span></li>
+                            <li>5-year risk: <span tal:replace="results/risk5_int_n">$risk5_int</span></li>
+                        </ul>
+                    </div>    
+                </p>
+                
+                <p tal:condition="python:txtoption == 4">
+                    <b>Near occlusion and condition of the plaque surface are unknown.</b><br>
+                    <b>If these angiographic parameters were known, the risk of ischaemic stroke would be:</b><br>
+                    <div>
+                    NO near occlusion, IRREGULAR or ULCERATED plaque:
+                    <ul>
+                        <li>1-year risk: <span tal:replace="results/risk1_int_plaq">$risk1_int_n</span></li>
+                        <li>5-year risk: <span tal:replace="results/risk5_int_plaq">$risk5_int_n</span></li>
+                    </ul> 
+                   </div>
+                    <div> 
+                    NO near occlusion, SMOOTH plaque:
+                      <ul>
+                            <li>1-year risk: <span tal:replace="results/risk1_int_none">$risk1_int_</span></li>
+                            <li>5-year risk: <span tal:replace="results/risk5_int_none">$risk5_int</span></li>
+                        </ul>
+                    <span tal:condition="python:float(car) < 70">(you entered stenosis less than 70%, hence there should be no near occlusion)</span>
+                    </div>
+                    <div tal:condition="python:float(car) >=70">
+                    NEAR OCCLUSION, IRREGULAR or ULCERATED plaque:
+                    <ul>
+                        <li>1-year risk: <span tal:replace="results/risk1_int_both">$risk1_int_n</span></li>
+                        <li>5-year risk: <span tal:replace="results/risk5_int_both">$risk5_int_n</span></li>
+                    </ul> 
+                    
+                     
+                    NEAR OCCLUSION, SMOOTH plaque:
+                      <ul>
+                            <li>1-year risk: <span tal:replace="results/risk1_int_nocc">$risk1_int_</span></li>
+                            <li>5-year risk: <span tal:replace="results/risk5_int_nocc">$risk5_int</span></li>
+                        </ul>
+                    </div>    
+                </p>
+        
+        
+            </tal:variables>
+            </div>
+        </div>
+
+    </metal:block>
+
+</body>
+</html>

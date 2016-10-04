@@ -1,0 +1,5 @@
+====================
+ndcn.stroke
+====================
+
+User documentation

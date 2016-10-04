@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<layers>
+  <layer
+      name="ndcn.stroke"
+      interface="ndcn.stroke.interfaces.INdcnStrokeLayer"
+      />
+</layers>
