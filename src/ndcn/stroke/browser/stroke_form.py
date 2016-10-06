@@ -143,9 +143,10 @@ class StrokeForm(form.Form):
     ignoreContext = True
 
     output = None
-    
-    self.request.response.setHeader('X-Frame-Options', 'ALLOWALL')
-    
+   
+    # def __init__(self, context, request):
+    #
+    #     self.request.response.setHeader('X-Frame-Options', 'ALLOWALL')
 
     def updateWidgets(self):
         super(StrokeForm, self).updateWidgets()
