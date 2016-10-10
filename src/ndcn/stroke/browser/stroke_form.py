@@ -1,3 +1,5 @@
+from __future__ import division
+
 from zope.interface import Interface
 from zope.schema import TextLine
 from zope.schema import Date
@@ -11,8 +13,8 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile as FiveV
 _ = MessageFactory('stroke_form')
 
 from Products.statusmessages.interfaces import IStatusMessage
+
 from z3c.form import button
-from z3c.form import form, field
 from z3c.form.browser.radio import RadioFieldWidget
 
 from zope.interface import Invalid
@@ -21,8 +23,11 @@ from z3c.form.interfaces import ActionExecutionError
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
+from plone.autoform import directives as formhints
+from plone.supermodel import model
+from plone.autoform.form import AutoExtensibleForm
+from z3c.form import form
 
-from plone.autoform import directives
 import plone.app.z3cform
 import plone.z3cform.templates
 
@@ -52,7 +57,7 @@ GenderVocabulary = SimpleVocabulary(
 
 
 
-class IStrokeForm(Interface):
+class IStrokeForm(model.Schema):
 
 
     age = Int(
@@ -62,14 +67,14 @@ class IStrokeForm(Interface):
         max=100,
             )
             
-    directives.widget('sex',RadioFieldWidget)
+    formhints.widget('sex',RadioFieldWidget)
     sex = Choice(
          title=u'Sex',
          vocabulary=GenderVocabulary,
          required=True,
          )
          
-    directives.widget('noccl',RadioFieldWidget)
+    formhints.widget('noccl',RadioFieldWidget)
     noccl = Choice(
         title=u'Near occlusion',
         vocabulary=YesNoUnknownVocabulary,
@@ -88,13 +93,13 @@ class IStrokeForm(Interface):
         max=180,
             )
             
-    directives.widget('event',RadioFieldWidget)
+    formhints.widget('event',RadioFieldWidget)
     event = Choice(
         title=u'Primary symptomatic event',
         vocabulary=EventVocabulary
         )
         
-    directives.widget('diab',RadioFieldWidget)
+    formhints.widget('diab',RadioFieldWidget)
     diab = Choice(
         title=u'Diabetes',
         vocabulary=YesNoVocabulary,
@@ -102,7 +107,7 @@ class IStrokeForm(Interface):
         required=True,
     )
     
-    directives.widget('mi',RadioFieldWidget)
+    formhints.widget('mi',RadioFieldWidget)
     mi = Choice(
         title=u'Myocardial Infarction',
         default="N",
@@ -110,7 +115,7 @@ class IStrokeForm(Interface):
         required=True,
     )
     
-    directives.widget('pvd',RadioFieldWidget)
+    formhints.widget('pvd',RadioFieldWidget)
     pvd = Choice(
         title=u'Peripheral vascular disease',
         vocabulary=YesNoVocabulary,
@@ -118,7 +123,7 @@ class IStrokeForm(Interface):
         required=True,
     )
     
-    directives.widget('hypert',RadioFieldWidget)
+    formhints.widget('hypert',RadioFieldWidget)
     hypert = Choice(
         title=u'Treated hypertension',
         vocabulary=YesNoVocabulary,
@@ -126,7 +131,7 @@ class IStrokeForm(Interface):
         required=True,
     )
         
-    directives.widget('pla',RadioFieldWidget)
+    formhints.widget('pla',RadioFieldWidget)
     pla= Choice(
         title=u'Irregular/ulcerated plaque surface',
         vocabulary=YesNoUnknownVocabulary,
@@ -136,9 +141,9 @@ class IStrokeForm(Interface):
         
     
             
-class StrokeForm(form.Form):
+class StrokeForm(AutoExtensibleForm, form.Form):
 
-    fields = field.Fields(IStrokeForm)
+    schema = IStrokeForm
 
     ignoreContext = True
 
@@ -177,25 +182,25 @@ class StrokeForm(form.Form):
         redirect_url = "%s/@@strokeform" % self.context.absolute_url()
         self.request.response.redirect(redirect_url)
     
-    def oneyearrange(self,riskinteger):
+    def oneyearrange(self,risk):
         
-        if riskinteger < 5:
-            text = "less than 5"
-        elif riskinteger > 20:
-            text = "exceeds 20"
+        if risk < 5:
+            text = "less than 5%"
+        elif risk > 20:
+            text = "exceeds 20%"
         else:
-            text = str(riskinteger)
+            text = "{0}%".format(str(risk))
         
         return text
         
-    def fiveyearrange(self,riskinteger):
+    def fiveyearrange(self,risk):
         
-        if riskinteger < 10:
-            text = "less than 10"
-        elif riskinteger > 50:
-            text = "exceeds 50"
+        if risk < 10:
+            text = "less than 10%"
+        elif risk > 50:
+            text = "exceeds 50%"
         else:
-            text = str(riskinteger)
+            text = "{0}%".format(str(risk))
         
         return text
          

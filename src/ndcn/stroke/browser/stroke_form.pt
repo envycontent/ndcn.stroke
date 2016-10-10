@@ -4,7 +4,6 @@
 
     <metal:block fill-slot="main">
 
-<h1 class="documentFirstHeading" tal:content="view/label | nothing" />
 
         <div id="content-core">
 
@@ -28,13 +27,13 @@
                                               hypert python:formvalues.get('hypert','');
                                               pla python:formvalues.get('pla','');">
                                               
-                <h1> Model for predicting the risk of ipsilateral ischaemic stroke in patients with recently symptomatic carotid bifurcation stenosis</h1>       
+                       
                 <p>You entered patient's data:</p>
                 <ul>
                     <li>Age: <b><span tal:replace="age"></span></b> years</li>
                     <li>Sex: <b><span tal:replace="sex"></span></b></li>
                     <li>Near Occlusion: <b><span tal:replace="noccl"></span></b></li>
-                    <li>Stenosis: <b><span tal:replace="car"></span></b></li>
+                    <li>Stenosis (%): <b><span tal:replace="car"></span></b></li>
                     <li>Time since last event: <b><span tal:replace="tslev"></span></b> days </li>
                     <li>Primary event: <b><span tal:replace="event"></span></b></li>
                     <li>Diabetes: <b><span tal:replace="diab"></span></b></li>
@@ -48,7 +47,7 @@
                     <b>Risk of ipsilateral ischaemic stroke predicted by the model</b>:<br>
                     <ul>
                         <li>1-year risk: <span tal:replace="results/risk1_int">$risk1_int</span></li>
-                        <li>5-year risk: <span tal:replace="results/risk5_int">$risk5_int</span></li>
+                        <li>5-year risk: <span tal:replace="results/risk5_int">$risk5_int</span></li>                        
                     </ul>    
                 </p>
                 
