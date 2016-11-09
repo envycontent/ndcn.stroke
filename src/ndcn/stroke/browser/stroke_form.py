@@ -18,7 +18,7 @@ from z3c.form import button
 from z3c.form.browser.radio import RadioFieldWidget
 
 from zope.interface import Invalid
-from z3c.form.interfaces import ActionExecutionError
+from z3c.form.interfaces import ActionExecutionError, WidgetActionExecutionError
 
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
@@ -61,7 +61,7 @@ class IStrokeForm(model.Schema):
 
 
     age = Int(
-        title=_(u"Age in years (between 40 and 100)"),
+        title=_(u"Age [40-100 years]"),
         required=True,
         min=40,
         max=100,
@@ -78,17 +78,18 @@ class IStrokeForm(model.Schema):
     noccl = Choice(
         title=u'Near occlusion',
         vocabulary=YesNoUnknownVocabulary,
+        default='N'
         )
         
     car = Float(
-        title=_(u"Carotid stenosis on symptomatic side (percentage, between 50 and 99)"),
+        title=_(u"Carotid stenosis on symptomatic side [50-99%]"),
         min=50.0,
         max=99.0,
         required=False
             )
             
     tslev = Int(
-        title=_(u"Time in days since last event (between 7 and 180 days)"),
+        title=_(u"Time in days since last event [7-180 days]"),
         min=7,
         max=180,
             )
@@ -103,14 +104,12 @@ class IStrokeForm(model.Schema):
     diab = Choice(
         title=u'Diabetes',
         vocabulary=YesNoVocabulary,
-        default="N",
         required=True,
     )
     
     formhints.widget('mi',RadioFieldWidget)
     mi = Choice(
         title=u'Myocardial Infarction',
-        default="N",
         vocabulary=YesNoVocabulary,
         required=True,
     )
@@ -119,7 +118,6 @@ class IStrokeForm(model.Schema):
     pvd = Choice(
         title=u'Peripheral vascular disease',
         vocabulary=YesNoVocabulary,
-        default="N",
         required=True,
     )
     
@@ -127,7 +125,6 @@ class IStrokeForm(model.Schema):
     hypert = Choice(
         title=u'Treated hypertension',
         vocabulary=YesNoVocabulary,
-        default="N",
         required=True,
     )
         
@@ -135,7 +132,6 @@ class IStrokeForm(model.Schema):
     pla= Choice(
         title=u'Irregular/ulcerated plaque surface',
         vocabulary=YesNoUnknownVocabulary,
-        default="N",
         required=True,
         )
         
@@ -163,7 +159,7 @@ class StrokeForm(AutoExtensibleForm, form.Form):
         if 'car' in data.keys():
 
             if (data['car'] in range(1,99)) and (data['noccl'] == 'Y'):
-                raise ActionExecutionError(Invalid(u'Please check the stenosis value! It should be either a numeric value or near occlusion but not both.'))
+                raise WidgetActionExecutionError('car', Invalid(u'Please check the stenosis value! It should be either a numeric value or near occlusion but not both.'))
             
 
         if errors:
