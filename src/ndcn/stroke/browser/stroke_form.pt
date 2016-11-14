@@ -7,7 +7,7 @@
 
         <div id="content-core">
 
-            <div id="form-input" tal:condition="not: view/form_instance/output">
+            <div id="form-input" >
                 <span tal:replace="structure view/contents" />
             </div>
 
